@@ -68,6 +68,7 @@ charTranslation* translateTree(huffmanTree* completed);
 void inputToOutputFile(FILE* input, FILE* output, charTranslation* characters);
 FILE* writeBoolVectorToFile(std::vector <bool> v, FILE* output);
 std::vector <huffmanTree*> createHuffmanHeap(unsigned int* counted_Chars);
+huffmanTree* combineNodes(std::vector <huffmanTree*> huffmanHeap, unsigned int charactersUsed);
 
 
 int main(int argc, char** argv)
@@ -103,24 +104,8 @@ int main(int argc, char** argv)
 
  	std::make_heap (huffmanHeap.begin(),huffmanHeap.end(),&compareHuffman );
 
-	huffmanTree* temp1, *temp2, *combinedTree;
-	for(i=0;i<charactersUsed-1;i++)
-	{
-		temp1 = huffmanHeap.front();
-		std::pop_heap (huffmanHeap.begin(),huffmanHeap.end(), compareHuffman) ;
-		huffmanHeap.pop_back();
 
-		temp2 = (huffmanHeap.front());
-		std::pop_heap (huffmanHeap.begin(),huffmanHeap.end(), compareHuffman) ;
-		huffmanHeap.pop_back();
-
-		combinedTree = new huffmanTree (temp1, temp2);
-		
-
-		huffmanHeap.push_back(combinedTree); 
-		std::push_heap (huffmanHeap.begin(),huffmanHeap.end(), compareHuffman);		
-	}
-
+ 	huffmanTree* combinedTree = combineNodes(huffmanHeap, charactersUsed);
 	//might not need
 
 	assignDepth(combinedTree);
@@ -139,6 +124,32 @@ int main(int argc, char** argv)
 
  	return 0;
 
+}
+
+
+
+huffmanTree* combineNodes(std::vector <huffmanTree*> huffmanHeap, unsigned int charactersUsed)
+{
+	int i;
+		huffmanTree* temp1, *temp2, *combinedTree;
+	for(i=0;i<charactersUsed-1;i++)
+	{
+		temp1 = huffmanHeap.front();
+		std::pop_heap (huffmanHeap.begin(),huffmanHeap.end(), compareHuffman) ;
+		huffmanHeap.pop_back();
+
+		temp2 = (huffmanHeap.front());
+		std::pop_heap (huffmanHeap.begin(),huffmanHeap.end(), compareHuffman) ;
+		huffmanHeap.pop_back();
+
+		combinedTree = new huffmanTree (temp1, temp2);
+		
+
+		huffmanHeap.push_back(combinedTree); 
+		std::push_heap (huffmanHeap.begin(),huffmanHeap.end(), compareHuffman);		
+	}
+
+	return combinedTree;
 }
 
 std::vector <huffmanTree*> createHuffmanHeap(unsigned int* counted_Chars)
