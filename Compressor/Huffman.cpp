@@ -67,11 +67,12 @@ void  printBoolVector(std::vector <bool> v);
 charTranslation* translateTree(huffmanTree* completed);
 void inputToOutputFile(FILE* input, FILE* output, charTranslation* characters);
 FILE* writeBoolVectorToFile(std::vector <bool> v, FILE* output);
+std::vector <huffmanTree*> createHuffmanHeap(unsigned int* counted_Chars);
 
 
 int main(int argc, char** argv)
 {
-	FILE* fp = fopen("MOBY DICK OR THE WHALE.txt","r");
+	FILE* fp = fopen("MOBY DICK.txt","r");
 
 	if(fp == NULL)
 	{
@@ -91,19 +92,9 @@ int main(int argc, char** argv)
 		
 	}
 
-	std::vector <huffmanTree*> huffmanHeap = std::vector <huffmanTree*>();
+	std::vector <huffmanTree*> huffmanHeap = createHuffmanHeap(counted_Chars);
 
-	huffmanTree* temp;
-	int nodeIndex = 0,j;
-	for(i=0;i<256;i++)
-	{
-		if(counted_Chars[i]>0)
-		{
-			temp = new huffmanTree(i, counted_Chars[i]);
 
-			huffmanHeap.push_back(temp);
-		}		
-	}
 	std::make_heap (huffmanHeap.begin(),huffmanHeap.end(),&compareHuffman );
 	for(i=0;i<charactersUsed;i++)
 	{
@@ -130,6 +121,8 @@ int main(int argc, char** argv)
 		std::push_heap (huffmanHeap.begin(),huffmanHeap.end(), compareHuffman);		
 	}
 
+	//might not need
+
 	assignDepth(combinedTree);
 
 	charTranslation *translation;
@@ -146,6 +139,25 @@ int main(int argc, char** argv)
 
  	return 0;
 
+}
+
+std::vector <huffmanTree*> createHuffmanHeap(unsigned int* counted_Chars)
+{
+	std::vector <huffmanTree*> huffmanHeap = std::vector <huffmanTree*>();
+
+	huffmanTree* temp;
+	int nodeIndex = 0,i;
+	for(i=0;i<256;i++)
+	{
+		if(counted_Chars[i]>0)
+		{
+			temp = new huffmanTree(i, counted_Chars[i]);
+
+			huffmanHeap.push_back(temp);
+		}		
+	}
+
+	return huffmanHeap;
 }
 
 void inputToOutputFile(FILE* input, FILE* output, charTranslation* characters)
